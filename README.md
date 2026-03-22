@@ -7,50 +7,58 @@ A clean architecture template for C# projects through Nugget.
 ```
 CleanArchitecture/
 |-src/
-| |-API/
+| |-CleanArchitecture.API/
 | | |-Controllers/
 | | |-Logs/
 | | |-Middleware/
 | | |-Models/
 | | |-Api.csproj
 | | |-Program.cs
+|
 | |-Core/
-| | |-Application/
+| | |-CleanArchitecture.Application/
 | | | |-Features/
 | | | |-Interfaces/
 | | | |-Models/
 | | | |-Exeptions/
 | | | |-MappingProfies/
 | | | |-Aplication.csproj
-| | |-Domain/
+| |
+| | |-CleanArchitecture.Domain/
 | | | |-Common/
 | | | |-Domain.csproj
+| |
 | |-Infraestructure/
-| | |-Identity/
+| | |-CleanArchitecture.Identity/
 | | | |-Configurations/
 | | | |-DbContext/
 | | | |-Migrations/
 | | | |-Models/
 | | | |-Services/
 | | | |-Identity.csproj
-| | |-Infrastructure/
+| |
+| | |-CleanArchitecture.Infrastructure/
 | | | |-Infrastructure.csproj
-| | |-Persistence/
+| |
+| | |-CleanArchitecture.Persistence/
 | | | |-Configurations/
 | | | |-DatabaseContext/
 | | | |-Migrations/
 | | | |-Repositories/
 | | | |-Persistence.csproj
+|
 | |-UI/
 | | |-WebUI/
 | | |-DesktopUI/
 | | |-MobileUI/
+|
 |-test/
-| |-UnitTests/
-| | |-UnitTests.Features/
-| | |-UnitTests.Mocks/
-| | |-UnitTests.csproj
-| |-IntegrationTests/
-| | |-IntegrationTests.csproj
+| |-CleanArchitecture.UnitTests/
+| | |-Features/
+| | |-Mocks/
+| | |-CleanArchitecture.UnitTests.csproj
+| |-CleanArchitecture.IntegrationTests/
+| | |-CleanArchitecture.IntegrationTests.csproj
+|
 |-CleanArchitecture.sln
 ```
