@@ -1,3 +1,8 @@
+using CleanArchitecture.Api.Middleware;
+using Infrastructure.CleanArchitecture.Identity;
+using Infrastructure.CleanArchitecture.Infrastructure;
+using Core.CleanArchitecture.Application;
+using Infrastructure.CleanArchitecture.Persistence;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.

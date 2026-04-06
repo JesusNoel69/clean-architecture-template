@@ -1,4 +1,8 @@
-﻿namespace CleanArchitecture.Persistence;
+﻿using Core.CleanArchitecture.Application.Interface.Persistence;
+using Core.CleanArchitecture.Domain;
+using CleanArchitecture.Persistence.DatabaseContext;
+using CleanArchitecture.Persistence.Repositories;
+namespace CleanArchitecture.Persistence;
 
 public class Class1
 {
