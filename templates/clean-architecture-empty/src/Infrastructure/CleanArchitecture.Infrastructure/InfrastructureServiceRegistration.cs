@@ -4,7 +4,7 @@ using Core.CleanArchitecture.Application.Contracts;
 using Core.CleanArchitecture.Application.Models;
 namespace CleanArchitecture.Infrastructure;
 
-public class Class1
+public static class InfrastructureServiceRegistration
 {
 
 }

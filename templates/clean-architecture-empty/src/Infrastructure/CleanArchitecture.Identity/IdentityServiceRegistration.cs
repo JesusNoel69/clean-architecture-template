@@ -5,7 +5,7 @@ using CleanArchitecture.Identity.Models;
 using CleanArchitecture.Identity.Services;
 namespace CleanArchitecture.Identity;
 
-public class Class1
+public static class IdentityServiceRegistration
 {
 
 }

@@ -4,7 +4,7 @@ using CleanArchitecture.Persistence.DatabaseContext;
 using CleanArchitecture.Persistence.Repositories;
 namespace CleanArchitecture.Persistence;
 
-public class Class1
+public static class PersistenceServiceRegistration 
 {
 
 }
