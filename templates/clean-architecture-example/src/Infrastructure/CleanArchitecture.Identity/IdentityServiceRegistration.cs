@@ -10,16 +10,28 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Microsoft.Extensions.Caching.Memory;
+using CleanArchitecture.Identity.Configurations;
 namespace CleanArchitecture.Identity
 {
     public static class IdentityServiceRegistration
     {
         public static IServiceCollection AddIdentityServices(this IServiceCollection services, IConfiguration configuration)
         {
-            services.Configure<JwtSettings>(configuration.GetSection("JwtSettings"));
-
-            services.AddDbContext<IdentityDbContext>(options =>
-                options.UseSqlServer(configuration.GetConnectionString("DatabaseConnectionString")));
+            services.Configure<JwtSettings>(configuration.GetSection("JwtSettings"));   
+            var useInMemoryDatabase = configuration.GetValue<bool>("UseInMemoryDatabase");
+            if (useInMemoryDatabase)
+            {
+                services.AddDbContext<IdentityDbContext>(options =>
+                    options.UseInMemoryDatabase("CleanArchitectureDB"));
+                var roles = new RoleConfiguration();
+            }
+            else
+            {
+                services.AddDbContext<IdentityDbContext>(options =>
+                    options.UseSqlServer(configuration.GetConnectionString("DatabaseConnectionString")));
+            }
+            
             
             services.AddIdentity<ApplicationUser, IdentityRole>(options =>
                 {

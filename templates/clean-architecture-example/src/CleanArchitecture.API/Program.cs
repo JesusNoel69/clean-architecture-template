@@ -1,5 +1,7 @@
 using CleanArchitecture.Application;
 using CleanArchitecture.Identity;
+using CleanArchitecture.Identity.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -56,6 +58,25 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+}
+
+//Use db in memory instead directlysql depenency 
+var databaseInMemory = builder.Configuration.GetValue<bool>("UseInMemoryDatabase");
+if (databaseInMemory)
+{
+    using var scope = app.Services.CreateScope();
+
+    var userManager =
+        scope.ServiceProvider
+            .GetRequiredService<UserManager<ApplicationUser>>();
+
+    var roleManager =
+        scope.ServiceProvider
+            .GetRequiredService<RoleManager<IdentityRole>>();
+
+    await IdentityDbInitializer.SeedAsync(
+        userManager,
+        roleManager);
 }
 
 app.UseHttpsRedirection();
