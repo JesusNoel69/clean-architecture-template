@@ -7,18 +7,23 @@ using System.Text;
 using CleanArchitecture.Application.Interfaces.Identity;
 using CleanArchitecture.Application.Models.Identity;
 using CleanArchitecture.Identity.Models;
+using CleanArchitecture.Identity.Context;
+using Microsoft.EntityFrameworkCore;
 
 namespace CleanArchitecture.Identity.Services
 {
-    public class AuthService(UserManager<ApplicationUser> userManager,
-        IOptions<JwtSettings> jwtSettings,
-        SignInManager<ApplicationUser> signInManager) : IAuthService
+    public class AuthService(
+    UserManager<ApplicationUser> userManager,
+    IOptions<JwtSettings> jwtSettings,
+    SignInManager<ApplicationUser> signInManager,
+    IdentityDbContext context) : IAuthService
     {
 
         private readonly UserManager<ApplicationUser> _userManager = userManager;
         private readonly SignInManager<ApplicationUser> _signInManager = signInManager;
         private readonly JwtSettings _jwtSettings = jwtSettings.Value;
-
+        private readonly IdentityDbContext _context = context;
+        
         public async Task<AuthResponse> Login(AuthRequest request)
         {
             var user = await _userManager.FindByEmailAsync(request.Email);
@@ -43,6 +48,89 @@ namespace CleanArchitecture.Identity.Services
                 UserName = user.UserName
             };
             return response;
+        }
+        private RefreshToken GenerateRefreshToken()
+        {
+            return new RefreshToken
+            {
+                Token = Convert.ToBase64String(
+                    System.Security.Cryptography.RandomNumberGenerator.GetBytes(64)
+                ),
+
+                Expires = DateTime.UtcNow.AddDays(7),
+                Created = DateTime.UtcNow
+            };
+        }
+
+        public async Task<AuthResponse> RefreshTokenAsync(string token)
+        {
+            var user = await _context.Users
+                .Include(u => u.RefreshTokens)
+                .SingleOrDefaultAsync(u =>
+                    u.RefreshTokens.Any(t => t.Token == token));
+
+            if (user == null)
+            {
+                throw new Exception("Invalid token.");
+            }
+
+            var refreshToken = user.RefreshTokens
+                .Single(x => x.Token == token);
+
+            if (!refreshToken.IsActive)
+            {
+                throw new Exception("Inactive token.");
+            }
+
+            // revoke old token
+            refreshToken.Revoked = DateTime.UtcNow;
+
+            // generate new refresh token
+            var newRefreshToken = GenerateRefreshToken();
+
+            refreshToken.ReplacedByToken = newRefreshToken.Token;
+
+            user.RefreshTokens.Add(newRefreshToken);
+
+            await _context.SaveChangesAsync();
+
+            // generate new jwt
+            var jwtToken = await GenerateToken(user);
+
+            return new AuthResponse
+            {
+                Id = user.Id,
+                Email = user.Email,
+                UserName = user.UserName,
+                Token = new JwtSecurityTokenHandler()
+                    .WriteToken(jwtToken),
+
+                RefreshToken = newRefreshToken.Token
+            };
+        }
+        public async Task RevokeTokenAsync(string token)
+        {
+            var user = await _context.Users
+                .Include(u => u.RefreshTokens)
+                .SingleOrDefaultAsync(u =>
+                    u.RefreshTokens.Any(t => t.Token == token));
+
+            if (user == null)
+            {
+                throw new Exception("Token not found.");
+            }
+
+            var refreshToken = user.RefreshTokens
+                .Single(x => x.Token == token);
+
+            if (!refreshToken.IsActive)
+            {
+                throw new Exception("Token already inactive.");
+            }
+
+            refreshToken.Revoked = DateTime.UtcNow;
+
+            await _context.SaveChangesAsync();
         }
         private async Task<JwtSecurityToken> GenerateToken(ApplicationUser user)
         {

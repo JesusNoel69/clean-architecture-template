@@ -4,7 +4,7 @@ namespace CleanArchitecture.Application.Models.Identity
 {
     public class RegistrationRequest
     {
-         [Required] 
+        [Required] 
         public string FirstName { get; set; }
 
         [Required]
