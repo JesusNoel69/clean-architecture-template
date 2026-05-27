@@ -4,12 +4,16 @@ using CleanArchitecture.Identity;
 using CleanArchitecture.Identity.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.OpenApi.Models;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-
+builder.Host.UseSerilog((context, loggerConfig) => loggerConfig
+    .WriteTo.Console()
+    .ReadFrom.Configuration(context.Configuration)
+);
 builder.Services.AddApplicationServices();
 builder.Services.AddIdentityServices(builder.Configuration);
 //Use external controllers
@@ -60,6 +64,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseSerilogRequestLogging();
 
 //Use db in memory instead directly sql dependency 
 var databaseInMemory = builder.Configuration.GetValue<bool>("UseInMemoryDatabase");
