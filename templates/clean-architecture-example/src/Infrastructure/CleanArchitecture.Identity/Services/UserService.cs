@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using CleanArchitecture.Application.Exceptions;
 using CleanArchitecture.Application.Interfaces.Identity;
 using CleanArchitecture.Application.Models.Identity;
 using CleanArchitecture.Identity.Models;
@@ -22,7 +23,7 @@ namespace CleanArchitecture.Identity.Services
             var user = await _userManager.FindByIdAsync(userId);
             if (user == null)
             {
-                throw new Exception($"User with id {userId} not found.");
+                throw new NotFoundException("The user with id ", userId);
             }
             return new User
             {

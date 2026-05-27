@@ -9,6 +9,7 @@ using CleanArchitecture.Application.Models.Identity;
 using CleanArchitecture.Identity.Models;
 using CleanArchitecture.Identity.Context;
 using Microsoft.EntityFrameworkCore;
+using CleanArchitecture.Application.Exceptions;
 
 namespace CleanArchitecture.Identity.Services
 {
@@ -29,14 +30,12 @@ namespace CleanArchitecture.Identity.Services
             var user = await _userManager.FindByEmailAsync(request.Email);
             if (user == null)
             {
-                throw new Exception("User Not Found.");
-                //throw new NotFoundException($"User {request.Email} not found", request.Email);
+                throw new NotFoundException($"User {request.Email} not found", request.Email);
             }
             var result = await _signInManager.CheckPasswordSignInAsync(user, request.Password, false);
             if (result.Succeeded == false)
             {
-                throw new Exception("Crdentials for email are not valid.");
-                //throw new BadRequestException($"Credentials for {request.Email} are not valid.");
+                throw new BadRequestException($"Credentials for {request.Email} are not valid.");
             }
             JwtSecurityToken jwtSecurityToken = await GenerateToken(user);
 
@@ -117,7 +116,7 @@ namespace CleanArchitecture.Identity.Services
 
             if (user == null)
             {
-                throw new Exception("Token not found.");
+                throw new NotFoundException("Token", token);
             }
 
             var refreshToken = user.RefreshTokens
@@ -185,8 +184,7 @@ namespace CleanArchitecture.Identity.Services
                 {
                     str.AppendFormat("*{0}\n", error.Description);
                 }
-                throw new Exception($"{string.Join("\n", result.Errors.Select(e => e.Description))}");
-                //throw new BadRequestException($"{string.Join("",result.Errors)}");
+                throw new BadRequestException($"{string.Join("",result.Errors)}");
             }
         }
         
