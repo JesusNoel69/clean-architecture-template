@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace CleanArchitecture.Identity.Services
 {
-     public class UserService(UserManager<ApplicationUser> userManager, IHttpContextAccessor contextAccessor) : IUserService
+    public class UserService(UserManager<ApplicationUser> userManager, IHttpContextAccessor contextAccessor) : IUserService
     {
         private readonly UserManager<ApplicationUser> _userManager = userManager;
         private readonly IHttpContextAccessor _contextAccessor = contextAccessor;
@@ -18,6 +18,17 @@ namespace CleanArchitecture.Identity.Services
             _contextAccessor.HttpContext?
                 .User?
                 .FindFirstValue(CustomClaimTypes.Uid);
+
+        public Task AssignRole(string userId, string role)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task DeleteUser(string userId)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<User> GetUser(string userId)
         {
             var user = await _userManager.FindByIdAsync(userId);
@@ -44,6 +55,36 @@ namespace CleanArchitecture.Identity.Services
                 FirstName = q.FirstName,
                 LastName = q.LastName
             }).ToList();
+        }
+
+        public async Task<User> UpdateUser(UpdateUserRequest request)
+        {
+            var user = await _userManager.FindByIdAsync(request.Id);
+
+            if (user is null)
+            {
+                throw new NotFoundException("User", request.Id);
+            }
+
+            user.FirstName = request.FirstName;
+            user.LastName = request.LastName;
+
+            var result = await _userManager.UpdateAsync(user);
+
+            if (!result.Succeeded)
+            {
+                throw new Exception(
+                    string.Join("\n",
+                        result.Errors.Select(x => x.Description)));
+            }
+            return new User()
+            {
+                Email = user.Email,
+                FirstName = user.FirstName,
+                Id = user.Id,
+                LastName = user.LastName,
+                UserName = user.UserName,
+            };
         }
     }
 }
