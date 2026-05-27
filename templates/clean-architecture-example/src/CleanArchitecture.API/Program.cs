@@ -60,7 +60,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-//Use db in memory instead directlysql depenency 
+//Use db in memory instead directly sql dependency 
 var databaseInMemory = builder.Configuration.GetValue<bool>("UseInMemoryDatabase");
 if (databaseInMemory)
 {
