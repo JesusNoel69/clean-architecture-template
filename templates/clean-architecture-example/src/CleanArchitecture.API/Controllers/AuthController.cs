@@ -3,6 +3,7 @@ using CleanArchitecture.Application.Features.Auth.Commands.LoginUser;
 using CleanArchitecture.Application.Features.Auth.Commands.RefreshToken;
 using CleanArchitecture.Application.Features.Auth.Commands.RegisterUser;
 using CleanArchitecture.Application.Features.Auth.Commands.RevokeToken;
+using CleanArchitecture.Application.Features.Auth.Queries.GetCurrentUser;
 using CleanArchitecture.Application.Interfaces.Identity;
 using CleanArchitecture.Application.Models.Identity;
 using CleanArchitecture.Identity.Models;
@@ -50,12 +51,8 @@ namespace CleanArchitecture.API.Controllers
         [HttpGet("me")]
         public async Task<ActionResult<User>> Me()
         {
-            var userId = User.FindFirstValue(CustomClaimTypes.Uid);
-            if (string.IsNullOrWhiteSpace(userId))
-            {
-                return Unauthorized();
-            }
-            return Ok(await _userService.GetUser(userId));
+            return Ok(await _mediator.Send(
+                new GetCurrentUserQuery()));
         }
         [Authorize(Roles = Roles.Administrator)]
         [HttpGet("admin")]
