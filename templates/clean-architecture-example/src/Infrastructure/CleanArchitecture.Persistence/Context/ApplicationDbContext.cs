@@ -1,12 +1,32 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using CleanArchitecture.Application.Interfaces.Identity;
+using CleanArchitecture.Domain.Common;
+using Microsoft.EntityFrameworkCore;
 
 namespace CleanArchitecture.Persistence.Context
 {
-    public class ApplicationDbContext
+    public class ApplicationDbContext(IUserService _userService) : DbContext
     {
-        
+        //entities
+        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            foreach (var entry in base.ChangeTracker.Entries<BaseEntity>()
+                .Where(q => q.State == EntityState.Added || q.State == EntityState.Modified))
+            {
+                entry.Entity.DateModified = DateTime.Now;
+                entry.Entity.ModifiedBy = _userService.UserId;
+                if (entry.State == EntityState.Added)
+                {
+                    entry.Entity.DateCreated = DateTime.Now;
+                    entry.Entity.CreatedBy = _userService.UserId;
+                }
+            }
+            return base.SaveChangesAsync(cancellationToken);
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
+            base.OnModelCreating(modelBuilder);
+        }
     }
 }
