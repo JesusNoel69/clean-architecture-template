@@ -16,7 +16,6 @@ namespace CleanArchitecture.Application.MappingProfiles
             CreateMap<WorkItem, WorkItemDto>().ReverseMap();
             CreateMap<List<WorkItem>, List<WorkItemDto>>();
             CreateMap<List<WorkItem>, List<WorkItemDto>>().ReverseMap();
-
         }
     }
 }
