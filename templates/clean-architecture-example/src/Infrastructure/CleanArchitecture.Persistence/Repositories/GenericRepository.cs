@@ -9,9 +9,9 @@ namespace CleanArchitecture.Persistence.Repositories
     {
         protected readonly ApplicationDbContext _context = context;
 
-        public async Task CreatedAsync(T entity)
+        public async Task CreateAsync(T entity)
         {
-            await _context.AddAsync(entity);
+            await _context.Set<T>().AddAsync(entity);
             await _context.SaveChangesAsync();
         }
 
@@ -32,22 +32,34 @@ namespace CleanArchitecture.Persistence.Repositories
         {
             return await _context.Set<T>()
                 .AsNoTracking()
-                .AsNoTracking()
+                .FirstOrDefaultAsync(q=>q.Id==id);
+        }
+        
+        public async Task<T> GetByIdTrackedAsync(int id)
+        {
+            return await _context.Set<T>()
                 .FirstOrDefaultAsync(q=>q.Id==id);
         }
 
-        public async Task UpdatedAsync(T entity)
+        public async Task UpdateAsync(T entity)
         {
             _context.Entry(entity).State = EntityState.Modified;
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpSertAsync(List<T> entities)
+        public async Task UpSertAsync(T entity)
         {
-            entities.ForEach(entity => 
-                _context.Entry(entity).State = EntityState.Modified);
+            var existingEntity = await _context.Set<T>().FindAsync(entity.Id);
+            if (existingEntity is not null)
+            {
+                _context.Entry(existingEntity).CurrentValues.SetValues(entity);
+                _context.Entry(existingEntity).State = EntityState.Modified;
+            }
+            else
+            {
+                await _context.Set<T>().AddAsync(entity); 
+            }
             await _context.SaveChangesAsync();
-
         }
     }
 }
