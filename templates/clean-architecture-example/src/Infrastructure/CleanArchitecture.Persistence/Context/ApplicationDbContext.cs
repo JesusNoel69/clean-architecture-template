@@ -1,4 +1,5 @@
 using CleanArchitecture.Application.Interfaces.Identity;
+using CleanArchitecture.Domain;
 using CleanArchitecture.Domain.Common;
 using Microsoft.EntityFrameworkCore;
 
@@ -6,7 +7,7 @@ namespace CleanArchitecture.Persistence.Context
 {
     public class ApplicationDbContext(IUserService _userService) : DbContext
     {
-        //entities
+        public DbSet<WorkItem> WorkItem { get; set; }
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             foreach (var entry in base.ChangeTracker.Entries<BaseEntity>()
