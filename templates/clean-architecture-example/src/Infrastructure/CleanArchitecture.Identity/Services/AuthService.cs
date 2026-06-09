@@ -10,31 +10,36 @@ using CleanArchitecture.Identity.Models;
 using CleanArchitecture.Identity.Context;
 using Microsoft.EntityFrameworkCore;
 using CleanArchitecture.Application.Exceptions;
+using CleanArchitecture.Application.Interfaces.Logging;
 
 namespace CleanArchitecture.Identity.Services
 {
     public class AuthService(
-    UserManager<ApplicationUser> userManager,
-    IOptions<JwtSettings> jwtSettings,
-    SignInManager<ApplicationUser> signInManager,
-    IdentityDbContext context) : IAuthService
+        UserManager<ApplicationUser> userManager,
+        IOptions<JwtSettings> jwtSettings,
+        SignInManager<ApplicationUser> signInManager,
+        IdentityDbContext context,
+        IAppLogger<AuthService> logger) : IAuthService
     {
-
         private readonly UserManager<ApplicationUser> _userManager = userManager;
         private readonly SignInManager<ApplicationUser> _signInManager = signInManager;
         private readonly JwtSettings _jwtSettings = jwtSettings.Value;
         private readonly IdentityDbContext _context = context;
+        private readonly IAppLogger<AuthService> _logger = logger;
         
         public async Task<AuthResponse> Login(AuthRequest request)
         {
             var user = await _userManager.FindByEmailAsync(request.Email);
             if (user == null)
             {
-                throw new NotFoundException($"User {request.Email} not found", request.Email);
+                _logger.LogWarning("Login failed. User with email {Email} not found", request.Email);
+
+                throw new NotFoundException(nameof(ApplicationUser), request.Email);
             }
             var result = await _signInManager.CheckPasswordSignInAsync(user, request.Password, false);
             if (result.Succeeded == false)
             {
+                _logger.LogWarning("Invalid credentials for {Email}", request.Email);
                 throw new BadRequestException($"Credentials for {request.Email} are not valid.");
             }
             JwtSecurityToken jwtSecurityToken = await GenerateToken(user);
@@ -46,6 +51,7 @@ namespace CleanArchitecture.Identity.Services
                 Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken),
                 UserName = user.UserName
             };
+            _logger.LogInformation("User {UserId} logged in successfully", user.Id);
             return response;
         }
         private RefreshToken GenerateRefreshToken()
@@ -70,6 +76,7 @@ namespace CleanArchitecture.Identity.Services
 
             if (user == null)
             {
+                _logger.LogWarning("Refresh token validation failed. Token not found");
                 throw new Exception("Invalid token.");
             }
 
@@ -78,6 +85,7 @@ namespace CleanArchitecture.Identity.Services
 
             if (!refreshToken.IsActive)
             {
+                _logger.LogWarning("Refresh token validation failed. Token inactive");
                 throw new Exception("Inactive token.");
             }
 
@@ -116,6 +124,7 @@ namespace CleanArchitecture.Identity.Services
 
             if (user == null)
             {
+                _logger.LogWarning("Token revocation failed. Token not found");
                 throw new NotFoundException("Token", token);
             }
 
@@ -124,12 +133,13 @@ namespace CleanArchitecture.Identity.Services
 
             if (!refreshToken.IsActive)
             {
+                _logger.LogWarning("Token revocation failed. Token already inactive");
                 throw new Exception("Token already inactive.");
             }
 
             refreshToken.Revoked = DateTime.UtcNow;
-
             await _context.SaveChangesAsync();
+            _logger.LogInformation("Refresh token revoked for user {UserId}", user.Id);
         }
         private async Task<JwtSecurityToken> GenerateToken(ApplicationUser user)
         {
@@ -172,9 +182,11 @@ namespace CleanArchitecture.Identity.Services
                 EmailConfirmed = true
             };
             var result = await _userManager.CreateAsync(user, request.Password);
+            _logger.LogInformation("Registering new user with email {Email}", request.Email);
             if (result.Succeeded)
             {
                 await _userManager.AddToRoleAsync(user, Roles.Employee);
+                _logger.LogInformation("User {UserId} registered successfully", user.Id);
                 return new RegistrationResponse() { UserId = user.Id };
             }
             else
@@ -184,9 +196,9 @@ namespace CleanArchitecture.Identity.Services
                 {
                     str.AppendFormat("*{0}\n", error.Description);
                 }
+                _logger.LogWarning("Registration failed for email {Email}. Errors: {Errors}",request.Email, string.Join(", ", result.Errors.Select(x => x.Code)));
                 throw new BadRequestException($"{string.Join("",result.Errors)}");
             }
         }
-        
     }
 }
