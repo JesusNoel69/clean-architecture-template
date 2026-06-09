@@ -5,8 +5,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CleanArchitecture.Persistence.Context
 {
-    public class ApplicationDbContext(IUserService _userService) : DbContext
+    public class ApplicationDbContext(IUserService userService, DbContextOptions<ApplicationDbContext> options) : DbContext(options)
     {
+        private readonly IUserService _userService = userService;
         public DbSet<WorkItem> WorkItem { get; set; }
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
