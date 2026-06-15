@@ -28,7 +28,6 @@ namespace CleanArchitecture.Application.Features.WorkItems.Commands.CreateWorkIt
             var workItem = _mapper.Map<WorkItem>(request);
 
             await _workItemRepository.CreateAsync(workItem);
-            await _workItemRepository.CreateAsync(workItem);
 
             _logger.LogInformation("WorkItem {WorkItemId} created for user {UserId}", workItem.Id, workItem.UserId);
 
