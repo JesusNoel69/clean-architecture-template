@@ -23,10 +23,7 @@ public static class PersistenceServiceRegistration
                 services.AddDbContext<ApplicationDbContext>(options =>
                     options.UseSqlServer(configuration.GetConnectionString("DatabaseConnectionString")));
             }
-            services.AddDbContext<ApplicationDbContext>(options =>
-            {
-                options.UseSqlServer(configuration.GetConnectionString("DatabaseConnectionString"));
-            });
+           
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 
             return services;
