@@ -3,5 +3,5 @@ using MediatR;
 
 namespace CleanArchitecture.Application.Features.WorkItems.Queries.GetPendingWorkItems
 {
-    public record GetPendingWorkItemsQuery(string UserId) : IRequest<List<WorkItemDto>>;
+    public record GetPendingWorkItemsQuery() : IRequest<List<WorkItemDto>>;
 }

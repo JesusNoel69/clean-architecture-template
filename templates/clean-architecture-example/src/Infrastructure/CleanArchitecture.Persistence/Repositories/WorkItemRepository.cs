@@ -22,6 +22,10 @@ namespace CleanArchitecture.Persistence.Repositories
         {
             return await _context.WorkItem.Where(x=> x.UserId == userId).ToListAsync();
         }
+        public async Task<WorkItem?> GetByIdAndUserId(int id, string userId)
+        {
+            return await _context.WorkItem.FirstOrDefaultAsync(x => x.Id == id && x.UserId == userId);
+        }
         public async Task<List<WorkItem>> GetPendingByUserId(string userId)
         {
             return await _context.WorkItem.Where(x=> x.UserId == userId && x.Status == WorkItemStatus.Pending).ToListAsync();

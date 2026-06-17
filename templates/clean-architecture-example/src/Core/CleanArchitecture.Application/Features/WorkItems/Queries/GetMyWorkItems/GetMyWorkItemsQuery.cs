@@ -4,5 +4,5 @@ using MediatR;
 
 namespace CleanArchitecture.Application.Features.WorkItems.Queries.GetMyWorkItems
 {
-    public record GetMyWorkItemsQuery(string UserId) : IRequest<List<WorkItemDto>>;
+    public record GetMyWorkItemsQuery() : IRequest<List<WorkItemDto>>;
 }

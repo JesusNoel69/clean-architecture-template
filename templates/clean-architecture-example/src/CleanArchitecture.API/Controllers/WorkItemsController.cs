@@ -9,11 +9,13 @@ using CleanArchitecture.Application.Features.WorkItems.Queries.GetPendingWorkIte
 using CleanArchitecture.Application.Features.WorkItems.Queries.GetWorkItemById;
 using CleanArchitecture.Application.Models.WorkItem;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CleanArchitecture.API.Controllers
 {
     [ApiController]
+    [Authorize]
     [Route("api/[controller]")]
     public class WorkItemsController(IMediator mediator) : ControllerBase
     {
@@ -25,22 +27,22 @@ namespace CleanArchitecture.API.Controllers
             return Ok(await _mediator.Send(new GetWorkItemByIdQuery(id)));
         }
 
-        [HttpGet("{userId}/work-items")]
-        public async Task<ActionResult<List<WorkItemDto>>> GetMyWorkItems(string userId)
+        [HttpGet("my-work-items")]
+        public async Task<ActionResult<List<WorkItemDto>>> GetMyWorkItems()
         {
-            return Ok(await _mediator.Send(new GetMyWorkItemsQuery(userId)));
+            return Ok(await _mediator.Send(new GetMyWorkItemsQuery()));
         }
 
-        [HttpGet("pending/{userId}")]
-        public async Task<ActionResult<List<WorkItemDto>>> GetPending(string userId)
+        [HttpGet("pending")]
+        public async Task<ActionResult<List<WorkItemDto>>> GetPending()
         {
-            return Ok(await _mediator.Send(new GetPendingWorkItemsQuery(userId)));
+            return Ok(await _mediator.Send(new GetPendingWorkItemsQuery()));
         }
 
-        [HttpGet("overdue/{userId}")]
-        public async Task<ActionResult<List<WorkItemDto>>> GetOverdue(string userId)
+        [HttpGet("overdue")]
+        public async Task<ActionResult<List<WorkItemDto>>> GetOverdue()
         {
-            return Ok(await _mediator.Send(new GetOverdueWorkItemsQuery(userId)));
+            return Ok(await _mediator.Send(new GetOverdueWorkItemsQuery()));
         }
 
         [HttpPost]
