@@ -1,8 +1,5 @@
-﻿using Core.CleanArchitecture.Application.Interfaces.Identity;
-using Core.CleanArchitecture.Application.Models.Identity;
-using CleanArchitecture.Identity.DbContext;
-using CleanArchitecture.Identity.Models;
-using CleanArchitecture.Identity.Services;
+﻿using CleanArchitecture.Application;
+using CleanArchitecture.Identity;
 namespace CleanArchitecture.Identity;
 
 public static class IdentityServiceRegistration

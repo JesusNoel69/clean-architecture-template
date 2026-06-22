@@ -1,7 +1,6 @@
-﻿using Core.CleanArchitecture.Application.Interface.Persistence;
-using Core.CleanArchitecture.Domain;
-using CleanArchitecture.Persistence.DatabaseContext;
-using CleanArchitecture.Persistence.Repositories;
+﻿using CleanArchitecture.Application;
+using CleanArchitecture.Domain;
+using CleanArchitecture.Persistence;
 namespace CleanArchitecture.Persistence;
 
 public static class PersistenceServiceRegistration 
