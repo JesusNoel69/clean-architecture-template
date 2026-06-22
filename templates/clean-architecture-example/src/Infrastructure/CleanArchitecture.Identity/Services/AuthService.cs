@@ -43,12 +43,17 @@ namespace CleanArchitecture.Identity.Services
                 throw new BadRequestException($"Credentials for {request.Email} are not valid.");
             }
             JwtSecurityToken jwtSecurityToken = await GenerateToken(user);
+            var refreshToken = GenerateRefreshToken();
 
+            user.RefreshTokens.Add(refreshToken);
+
+            await _context.SaveChangesAsync();
             var response = new AuthResponse
             {
                 Id = user.Id,
                 Email = user.Email,
                 Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken),
+                RefreshToken = refreshToken.Token,
                 UserName = user.UserName
             };
             _logger.LogInformation("User {UserId} logged in successfully", user.Id);
@@ -63,7 +68,8 @@ namespace CleanArchitecture.Identity.Services
                 ),
 
                 Expires = DateTime.UtcNow.AddDays(7),
-                Created = DateTime.UtcNow
+                Created = DateTime.UtcNow,
+                CreatedByIp = "unknown"
             };
         }
 
@@ -134,7 +140,7 @@ namespace CleanArchitecture.Identity.Services
             if (!refreshToken.IsActive)
             {
                 _logger.LogWarning("Token revocation failed. Token already inactive");
-                throw new Exception("Token already inactive.");
+                throw new BadRequestException("Refresh token is already revoked.");
             }
 
             refreshToken.Revoked = DateTime.UtcNow;

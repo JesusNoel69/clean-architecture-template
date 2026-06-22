@@ -34,7 +34,7 @@ namespace CleanArchitecture.Persistence.Configurations
                     Status = WorkItemStatus.Pending
                 },
                 new {
-                    Id = 1,
+                    Id = 2,
                     Title = "Second Work Item",
                     Description = "Example 2",
                     UserId = "cbc43a8e-f7bb-4445-baaf-1add431ffbbf",
