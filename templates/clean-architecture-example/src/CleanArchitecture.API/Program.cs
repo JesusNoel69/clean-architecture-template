@@ -2,6 +2,8 @@ using CleanArchitecture.API.Middleware;
 using CleanArchitecture.Application;
 using CleanArchitecture.Identity;
 using CleanArchitecture.Identity.Models;
+using CleanArchitecture.Infrastructure;
+using CleanArchitecture.Persistence;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.OpenApi.Models;
 using Serilog;
@@ -16,6 +18,8 @@ builder.Host.UseSerilog((context, loggerConfig) => loggerConfig
 );
 builder.Services.AddApplicationServices();
 builder.Services.AddIdentityServices(builder.Configuration);
+builder.Services.AddConfigureInfrastructureServices();
+builder.Services.AddPersistenceServiceRegistration(builder.Configuration);
 //Use external controllers
 builder.Services.AddControllers();
 //CORS 
