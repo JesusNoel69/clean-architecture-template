@@ -9,7 +9,7 @@ CleanArchitecture/
 |-src/
 | |-CleanArchitecture.API/
 | | |-Controllers/
-| | |-Logs/
+| | |-ApiLogs/
 | | |-Middleware/
 | | |-Models/
 | | |-Api.csproj
@@ -19,6 +19,8 @@ CleanArchitecture/
 | | |-CleanArchitecture.Application/
 | | | |-Features/
 | | | |-Interfaces/
+| | | | |-Identity/
+| | | | |-Persitence/
 | | | |-Models/
 | | | |-Exceptions/
 | | | |-MappingProfiles/
@@ -70,6 +72,152 @@ CleanArchitecture/
 | | |-API/
 | | |-Persistence/
 | | |-CleanArchitecture.IntegrationTests.csproj
+|
+|-CleanArchitecture.sln
+```
+
+## Structure (Sample):
+
+```
+CleanArchitecture/
+|-src/
+| |-CleanArchitecture.API/
+| | |-Controllers/
+| | | |-AutController.cs
+| | | |-UsersController.cs
+| | | |-WorkItemController.cs
+| | |-ApiLogs/
+| | |-Middleware/
+| | | |-ExceptionMiddleware.cs
+| | |-Models/
+| | | |-CustomProblemDetails.cs
+| | |-Api.csproj
+| | |-Program.cs
+| |
+| |-Core/
+| | |-CleanArchitecture.Application/
+| | | |-Features/
+| | | | |-Auth/
+| | | | | |-Commands/
+| | | | | | |-LoginUser/
+| | | | | | |-RefreshToken/
+| | | | | | |-RegisterUser/
+| | | | | | |-RevokeToken/
+| | | | | |-Queries/
+| | | | | | |-GetCurrentUser/
+| | | | |-Users/
+| | | | | |-Commands/
+| | | | | | |-AssignRole/
+| | | | | | |-DeleteUser/
+| | | | | | |-UpdateUser/
+| | | | | |-Queries/
+| | | | | | |-GetUserById/
+| | | | | | |-GetUsers/
+| | | | |-WorkItems/
+| | | | | |-Commands/
+| | | | | | |-ChangePriority/
+| | | | | | |-CompleteWorkItem/
+| | | | | | |-CreateWorkItem/
+| | | | | | |-DeleteWorkItem/
+| | | | | | |-UpdateWorkItem/
+| | | | | |-Queries/
+| | | | | | |-GetMyWorkItems/
+| | | | | | |-GetOverDueWorkItems/
+| | | | | | |-GetPendingWorkItems/
+| | | | | | |-GetWorkItemById/
+| | | |-Interfaces/
+| | | | |-Identity/
+| | | | | |-IAuthService.cs
+| | | | | |-IUserService.cs
+| | | | |-Logging/
+| | | | | |-IAppLogger.cs
+| | | | |-Persitence/
+| | | | | |-IGenericRepository.cs
+| | | | | |-IWorkItemRespository.cs
+| | | |-Models/
+| | | | |-Identity/
+| | | | |-WorkItem/
+| | | |-Exceptions/
+| | | | |-BadRequestException.cs
+| | | | |-NotFoundException.cs
+| | | |-MappingProfiles/
+| | | | |-WorkItemProfile.cs
+| | | |-ApplicationServiceRegistration.cs
+| | | |-Application.csproj
+| | |
+| | |-CleanArchitecture.Domain/
+| | | |-Common/
+| | | | |-BaseEntity.cs
+| | | |-Enums/
+| | | |-WorkItem.cs
+| | | |-Domain.csproj
+| |
+| |-Infrastructure/
+| | |-CleanArchitecture.Identity/
+| | | |-Configurations/
+| | | | |-RoleConfiguraion.cs
+| | | | |-UserConfiguration.cs
+| | | | |-UserRoleConfiguration.cs
+| | | |-Context/
+| | | | |-IdentityDbContext.cs
+| | | |-Migrations/
+| | | |-Models/
+| | | | |-ApplicationUser.cs
+| | | | |-CustomClaimTypes.cs
+| | | | |-RefreshToken.cs
+| | | | |-Roles.cs
+| | | |-Services/
+| | | | |-AuthService.cs
+| | | | |-UserService.cs
+| | | |-IdentityDbInitializer.cs
+| | | |-IdentityServiceRegistration.cs
+| | | |-Identity.csproj
+| | |
+| | |-CleanArchitecture.Infrastructure/
+| | | |-Logging/
+| | | | |-LoggerAdapter.cs
+| | | |-InfrastructureServiceRegistration.cs
+| | | |-Infrastructure.csproj
+| | |
+| | |-CleanArchitecture.Persistence/
+| | | |-Configurations/
+| | | | |-WorkItemConfiguration.cs
+| | | |-Context/
+| | | | |-ApplicationDbContext.cs
+| | | |-Migrations/
+| | | |-Repositories/
+| | | | |-GenericRepository.cs
+| | | | |-WorkItemRepository.cs
+| | | |-PersistenceServiceRegistration.cs
+| | | |-Persistence.csproj
+| |
+| |-UI/
+| | |-WebUI/
+| | |-DesktopUI/
+| | |-MobileUI/
+|
+|-test/
+| |-CleanArchitecture.UnitTests/
+| | |-Common/
+| | | |-Mocks/
+| | | | |-WorkItemMockData.cs
+| | |-Features/
+| | | |-WorkItems/
+| | | | |-ChangePriorityCommandHandlerTests.cs
+| | | | |-CompleteWorkItemCommandHandlerTests.cs
+| | | | |-CreateWorkItemCommandHandlerTests.cs
+| | | | |-DeleteWorkItemCommandHandlerTests.cs
+| | | | |-UpdateWorkItemCommandHandlerTests.cs
+| | |-CleanArchitecture.UnitTests.csproj
+| |-CleanArchitecture.IntegrationTests/
+| | |-API/
+| | | |-AuthControllerTests.cs
+| | | |-WorkItemControllerTests.cs
+| | |-Persistence/
+| | | |-ApplicationDbContextTests.cs
+| | | |-WorkItemRepositoryTests.cs
+| | |-CleanArchitecture.IntegrationTests.csproj
+| | |-CustomWebApplicationFactory.cs
 |
 |-CleanArchitecture.sln
 ```
