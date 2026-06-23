@@ -1,0 +1,46 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+
+    <PackageType>Template</PackageType>
+
+    <PackageId>JesusNoel.CleanArchitecture.Template</PackageId>
+    <Version>1.0.0</Version>
+
+    <Title>Clean Architecture Template</Title>
+
+    <Authors>Jesus Noel</Authors>
+
+    <Description>
+      Clean Architecture template for ASP.NET Core with CQRS, MediatR, EF Core, Identity and JWT.
+    </Description>
+
+    <PackageTags>template;clean architecture;aspnetcore;cqrs</PackageTags>
+
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+
+    <PackageProjectUrl>https://github.com/JesusNoel69/clean-architecture-template</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/JesusNoel69/clean-architecture-template</RepositoryUrl>
+
+    <IncludeContentInPack>true</IncludeContentInPack>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+
+    <NoWarn>$(NoWarn);NU5128</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="templates\**\*"
+             Pack="true"
+             PackagePath="content" />
+
+    <Content Include="README.md"
+             Pack="true"
+             PackagePath="" />
+
+    <Content Include="LICENSE"
+             Pack="true"
+             PackagePath="" />
+  </ItemGroup>
+
+</Project>
