@@ -2,6 +2,30 @@
 
 A clean architecture template for C# projects using NuGet templates.
 
+## Features
+
+✔ CQRS
+✔ MediatR
+✔ JWT
+✔ Refresh Tokens
+✔ Identity
+✔ EF Core
+✔ Repository Pattern
+✔ FluentValidation
+✔ Serilog
+✔ Unit Tests
+✔ Integration Tests
+
+## Installation
+
+dotnet new install ...
+
+## Usage
+
+dotnet new cleanarchitecture -n MyProject
+
+dotnet new cleanarchitecture-sample -n Demo
+
 ## Structure (Empty):
 
 ```
