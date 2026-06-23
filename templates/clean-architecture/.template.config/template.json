@@ -1,0 +1,15 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "author": "Jesus Noel",
+  "name": "Clean Architecture Template (Empty)",
+  "shortName": "cleanarchitecture",
+  "description": "Clean Architecture template for ASP.NET Core with CQRS, MediatR, Entity Framework Core, Identity, JWT Authentication, Refresh Tokens, FluentValidation and unit testing.",
+  "classifications": ["Web", "API", "Clean Architecture"],
+  "identity": "JesusNoel.CleanArchitecture.Empty",
+  "sourceName": "CleanArchitecture",
+  "preferNameDirectory": true,
+  "tags": {
+    "language": "C#",
+    "type": "project"
+  }
+}
